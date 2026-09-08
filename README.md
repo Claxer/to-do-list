@@ -1,16 +1,29 @@
-# Python To-Do List
+# Python & Web To-Do List
 
-A beginner-friendly **To-Do List application built with Python** for managing daily tasks, tracking progress, organizing priorities, and keeping tasks saved between sessions.
+A beginner-friendly **To-Do List application available in both Python and Web versions**. The project is designed to help users manage daily tasks, organize priorities, track progress, and improve productivity through a simple and easy-to-use task-management system.
 
-This project started as a simple command-line To-Do List and has been improved with additional task-management features, better organization, input validation, persistent task storage, and more advanced application logic.
+The project originally started as a basic Python command-line application and has gradually been improved with additional task-management features. A **web version** was later added to provide a more modern, visual, and student-friendly experience.
 
-The project is designed as a practical way to practice **Python programming, functions, lists, dictionaries, loops, conditional statements, file handling, error handling, and application development**.
+This project is part of my learning journey as an **Information Technology student**, where I am practicing programming, web development, problem solving, application design, and GitHub project management.
 
 ---
 
-## Features
+# Features
 
-### Task Management
+The project contains two versions:
+
+* **Python Version** — Command-line task management application
+* **Web Version** — Modern browser-based task management application
+
+Both versions are designed around the same main purpose: helping users organize and manage their tasks.
+
+---
+
+# Python Version
+
+The Python version is a command-line To-Do List application built using Python's standard library.
+
+## Task Management
 
 * Add new tasks
 * View all tasks
@@ -22,34 +35,20 @@ The project is designed as a practical way to practice **Python programming, fun
 * Track task status
 * Prevent empty tasks from being added
 
-### Task Organization
+## Task Organization
 
-* Task priorities
-* Task categories
-* Task descriptions
-* Due dates
-* Organized task information
-* Completed and pending task tracking
-* Search and filtering capabilities
+Tasks can contain information such as:
 
-### Task Status
+* Task name
+* Description
+* Priority
+* Category
+* Due date
+* Completion status
 
-Tasks can have different states depending on their progress.
+## Priority Levels
 
-Example:
-
-```text
-[ ] Pending
-[✓] Completed
-```
-
-This makes it easier to see which tasks still need to be completed.
-
-### Priority Levels
-
-Tasks can be assigned different priority levels.
-
-Example:
+Tasks can be organized using:
 
 ```text
 HIGH
@@ -57,9 +56,9 @@ MEDIUM
 LOW
 ```
 
-This helps users focus on the most important tasks first.
+This helps users identify which tasks should be completed first.
 
-### Categories
+## Categories
 
 Tasks can be organized into categories such as:
 
@@ -71,32 +70,30 @@ Projects
 Other
 ```
 
-Categories make it easier to organize larger task lists.
+## Search and Filtering
 
-### Persistent Storage
+Users can search for specific tasks instead of manually looking through the entire task list.
 
-The application can save tasks to a local file.
-
-This means tasks are not necessarily lost when the program is closed.
-
-When the application starts again, previously saved tasks can be loaded.
-
-### Search and Filtering
-
-Users can search for specific tasks instead of manually checking the entire task list.
-
-Tasks can also be filtered based on information such as:
+Tasks can also be filtered by:
 
 * Completed
 * Pending
 * Priority
 * Category
 
-### Input Validation
+## Persistent Storage
 
-The application includes input validation to prevent common errors.
+The Python version can save tasks locally so that information can be loaded again when the application is restarted.
 
-For example:
+Depending on the implementation, tasks may be stored in:
+
+```text
+tasks.txt
+```
+
+## Input Validation
+
+The application includes validation for common input errors, including:
 
 * Empty task names
 * Invalid task numbers
@@ -104,37 +101,77 @@ For example:
 * Invalid priority selections
 * Invalid date input
 
-This helps prevent the application from crashing because of incorrect user input.
+## Error Handling
 
-### Error Handling
+Python exception handling is used to make the application safer when users enter invalid information.
 
-The program uses Python error-handling techniques such as:
+Example:
 
 ```python
 try:
-    ...
+    choice = int(input("Choose an option: "))
 except ValueError:
-    ...
+    print("Please enter a valid number.")
 ```
-
-This allows the application to handle invalid input more safely.
 
 ---
 
-# Technologies Used
+# Web Version
 
-* **Python 3**
-* Python Standard Library
-* Lists
-* Dictionaries
-* Functions
-* Loops
-* Conditional Statements
-* File Handling
-* Exception Handling
-* String Manipulation
+The web version transforms the original command-line To-Do List into a more modern and visual browser-based application.
 
-No external Python packages are required for the basic version.
+It was created to make the project easier to use while also giving me experience with **HTML, CSS, and JavaScript**.
+
+The web version focuses on a clean, aesthetically pleasing, and student-friendly interface.
+
+## Web Application Features
+
+The web version is designed around common task-management functionality, including:
+
+* Add tasks
+* View tasks
+* Complete tasks
+* Edit tasks
+* Delete tasks
+* Task status tracking
+* Task organization
+* Priority management
+* Categories
+* Due dates
+* Search and filtering
+* Interactive task controls
+* Responsive interface
+* Modern visual design
+
+## Student-Friendly Design
+
+The web version was designed with students in mind.
+
+The interface focuses on:
+
+* Simple navigation
+* Easy-to-read task information
+* Clear task status
+* Organized task sections
+* Quick access to task actions
+* Clean visual presentation
+* Comfortable use on different screen sizes
+
+The goal is to make the application feel more like a practical productivity tool rather than just a programming exercise.
+
+---
+
+# Web Technologies
+
+The web version uses:
+
+* **HTML5** — Page structure
+* **CSS3** — Styling and responsive design
+* **JavaScript** — Application logic and interactive features
+
+No framework is required for the basic web version.
+
+The project is designed so that the web application can be opened directly in a modern browser.
 
 ---
 
@@ -143,30 +180,38 @@ No external Python packages are required for the basic version.
 ```text
 to-do-list/
 │
-├──python-version
-   ├── main.py
-   └── tasks.txt
+├── python-version/
+│   ├── main.py
+│   └── tasks.txt
+│
+├── web-version/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
 ├── LICENSE
 └── README.md
 ```
 
-Depending on the current version of the project, additional files may be included.
-
 ### File Description
 
-| File        | Description                                               |
-| ----------- | --------------------------------------------------------- |
-| `main.py`   | Main Python application                                   |
-| `tasks.txt` | Local task storage file, if persistent storage is enabled |
-| `README.md` | Project documentation                                     |
+| File         | Description                                  |
+| ------------ | -------------------------------------------- |
+| `main.py`    | Main Python To-Do List application           |
+| `tasks.txt`  | Local task storage for the Python version    |
+| `index.html` | Main webpage for the web version             |
+| `style.css`  | Styling and layout for the web version       |
+| `script.js`  | JavaScript functionality for the web version |
+| `README.md`  | Project documentation                        |
+| `LICENSE`    | Project license                              |
 
-> The exact file names may vary depending on the version of the project.
+> The exact file names may change as the project continues to be developed.
 
 ---
 
-# How the Application Works
+# How the Python Version Works
 
-When the application starts, users are presented with a menu containing the available task-management options.
+When the Python application starts, users are presented with a menu containing the available task-management options.
 
 Example:
 
@@ -195,9 +240,9 @@ The user selects an option by entering its corresponding number.
 
 # Adding a Task
 
-Users can create a new task by selecting the **Add Task** option.
+Users can create a new task by selecting **Add Task**.
 
-The application can collect information such as:
+The application can collect:
 
 * Task name
 * Description
@@ -246,15 +291,11 @@ Example:
    Due: 2026-09-12
 ```
 
-This provides a quick overview of the user's current tasks.
-
 ---
 
 # Completing a Task
 
 When a task is finished, users can mark it as completed.
-
-Example:
 
 ```text
 Enter task number: 2
@@ -262,21 +303,21 @@ Enter task number: 2
 Task marked as completed!
 ```
 
-The task will then appear as:
+The task will then display:
 
 ```text
 [✓] Study Programming Concepts
 ```
 
-The application keeps the task in the list while changing its completion status.
+The task remains in the list while its completion status changes.
 
 ---
 
 # Editing a Task
 
-Users can modify an existing task if information needs to be changed.
+Users can modify an existing task.
 
-For example, a user may want to change:
+Possible information to change includes:
 
 * Task name
 * Description
@@ -299,9 +340,7 @@ Task updated successfully!
 
 # Deleting a Task
 
-Users can remove individual tasks that are no longer needed.
-
-Example:
+Users can remove individual tasks.
 
 ```text
 Enter task number to delete: 3
@@ -309,13 +348,11 @@ Enter task number to delete: 3
 Task deleted successfully!
 ```
 
-The selected task is removed from the task list.
-
 ---
 
 # Searching Tasks
 
-The search feature allows users to find a specific task quickly.
+The search feature allows users to quickly find tasks.
 
 Example:
 
@@ -328,15 +365,13 @@ Search Results:
 2. [✓] Study Python
 ```
 
-This is useful when the application contains many tasks.
-
 ---
 
 # Filtering Tasks
 
-Users can filter their task list based on different conditions.
+Tasks can be filtered according to different conditions.
 
-Examples include:
+Example:
 
 ```text
 1. Show All
@@ -346,7 +381,7 @@ Examples include:
 5. Show School Tasks
 ```
 
-Example:
+For example:
 
 ```text
 Filter: Pending
@@ -359,27 +394,9 @@ Pending Tasks:
 
 ---
 
-# Clearing Tasks
-
-The application can remove all stored tasks.
-
-Because this action can remove multiple tasks at once, the program can ask the user for confirmation.
-
-Example:
-
-```text
-Are you sure you want to clear all tasks? (y/n): y
-
-All tasks have been cleared.
-```
-
----
-
 # Saving Tasks
 
-Tasks can be saved locally so they can be restored later.
-
-Example:
+Tasks can be saved locally.
 
 ```text
 Saving tasks...
@@ -387,21 +404,13 @@ Saving tasks...
 Tasks saved successfully!
 ```
 
-Depending on the implementation, task information may be stored in a local text file.
-
-Example:
-
-```text
-tasks.txt
-```
+This allows task information to be restored later.
 
 ---
 
 # Loading Tasks
 
-When the application starts, previously saved tasks can be loaded from the local storage file.
-
-Example:
+When the Python application starts, previously saved tasks can be loaded.
 
 ```text
 Loading saved tasks...
@@ -409,281 +418,75 @@ Loading saved tasks...
 Tasks loaded successfully!
 ```
 
-This provides basic persistent data storage without requiring a database.
+This provides basic persistent storage without requiring a database.
 
 ---
 
-# Example Usage
+# Web Version Usage
 
-A typical session may look like this:
+The web version is designed to run directly in a modern web browser.
 
-```text
-=================================
-          PYTHON TO-DO LIST
-=================================
+## Option 1 — Open Directly
 
-1. Add Task
-2. View Tasks
-3. Complete Task
-4. Edit Task
-5. Delete Task
-6. Search Tasks
-7. Filter Tasks
-8. Clear Tasks
-9. Save Tasks
-10. Exit
-
-Choose an option: 1
-```
-
-The user adds a task:
+Navigate to the:
 
 ```text
-Enter task: Study Python
-
-Enter priority: High
-
-Enter category: School
-
-Task added successfully!
+web-version/
 ```
 
-Viewing the task:
+folder and open:
 
 ```text
-YOUR TASKS
-
-1. [ ] Study Python
-   Priority: HIGH
-   Category: School
+index.html
 ```
 
-After completing the task:
+The application should open in your default browser.
+
+## Option 2 — Use VS Code
+
+Open the project in **Visual Studio Code**.
+
+Navigate to:
 
 ```text
-1. [✓] Study Python
-   Priority: HIGH
-   Category: School
+web-version/index.html
 ```
 
----
+Then open the HTML file in a browser.
 
-# Learning Objectives
-
-This project is designed to help develop practical Python programming skills.
-
-## Python Fundamentals
-
-The project practices:
-
-* Variables
-* Strings
-* Integers
-* Booleans
-* Lists
-* Dictionaries
-* Functions
-
-## Programming Logic
-
-The application uses:
-
-* `if`
-* `elif`
-* `else`
-* `for` loops
-* `while` loops
-* Functions
-* Conditions
-* Menu-based program logic
-
-## User Input
-
-The project demonstrates how to:
-
-* Receive user input
-* Validate input
-* Convert input types
-* Handle invalid input
-* Create interactive command-line programs
-
-## Data Management
-
-The application practices:
-
-* Adding data
-* Updating data
-* Removing data
-* Searching data
-* Filtering data
-* Tracking task status
-* Organizing information
-
-## File Handling
-
-The project demonstrates basic file operations such as:
-
-* Creating files
-* Reading files
-* Writing files
-* Saving application data
-* Loading saved data
-
-## Error Handling
-
-The project also introduces exception handling to prevent unexpected program crashes.
-
-Example:
-
-```python
-try:
-    choice = int(input("Choose an option: "))
-except ValueError:
-    print("Please enter a valid number.")
-```
-
----
-
-# Installation
-
-## 1. Install Python
-
-Make sure Python 3 is installed on your computer.
-
-Check your Python version using:
-
-```bash
-python --version
-```
-
-On Windows, you can also use:
-
-```bash
-py --version
-```
-
----
-
-## 2. Clone the Repository
-
-Clone the repository using Git:
-
-```bash
-git clone https://github.com/YOUR-USERNAME/python-to-do-list.git
-```
-
-Replace:
-
-```text
-YOUR-USERNAME
-```
-
-with your GitHub username.
-
-Then enter the project folder:
-
-```bash
-cd python-to-do-list
-```
-
----
-
-## 3. Run the Application
-
-Run the main Python file:
-
-```bash
-python main.py
-```
-
-On Windows, you can also use:
-
-```bash
-py main.py
-```
+If using a local development extension such as Live Server, the webpage can also be launched through the local development server.
 
 ---
 
 # Requirements
 
+## Python Version
+
 * Python 3.x
-* Git — optional, only required if cloning the repository
+* Git — optional
 
-The current command-line version is designed to use Python's standard library.
+The Python version uses Python's standard library for its basic functionality.
 
-No external packages are required unless additional features are added in future versions.
+No external packages are required for the command-line version unless additional features are introduced later.
+
+## Web Version
+
+* Modern web browser
+* HTML5 support
+* CSS3 support
+* JavaScript support
+
+No Python installation is required to use the basic web version.
 
 ---
 
-# Project Development
+# Development History
 
 This project was developed progressively as a learning project.
 
-### Initial Version
+## Version 1.0 — Basic Python To-Do List
 
-The first version focused on basic task management:
-
-* Add tasks
-* View tasks
-* Complete tasks
-* Delete tasks
-* Clear tasks
-
-### Improved Version
-
-The improved version expands the application with more practical functionality, including:
-
-* Task priorities
-* Task categories
-* Task descriptions
-* Due dates
-* Editing tasks
-* Searching tasks
-* Filtering tasks
-* Persistent task storage
-* Improved input validation
-* Error handling
-* Better task organization
-* More structured application logic
-
-The goal is to gradually transform a simple Python exercise into a more complete task-management application.
-
----
-
-# Future Improvements
-
-There are still many ways this project can be improved.
-
-Possible future features include:
-
-* [ ] Task reminders
-* [ ] Automatic overdue detection
-* [ ] Recurring tasks
-* [ ] Task sorting
-* [ ] Advanced filtering
-* [ ] Task statistics
-* [ ] Productivity tracking
-* [ ] Daily task summaries
-* [ ] Weekly task summaries
-* [ ] Calendar integration
-* [ ] SQLite database
-* [ ] JSON-based storage
-* [ ] User accounts
-* [ ] Login system
-* [ ] Graphical user interface
-* [ ] Dark mode
-* [ ] Desktop application
-* [ ] Web version
-* [ ] Mobile version
-* [ ] Cloud synchronization
-
----
-
-# Version History
-
-## Version 1.0 — Basic To-Do List
-
-The initial version introduced the core task-management functionality.
+The first version focused on basic task management.
 
 ### Included
 
@@ -696,9 +499,9 @@ The initial version introduced the core task-management functionality.
 
 ---
 
-## Version 2.0 — Improved To-Do List
+## Version 2.0 — Improved Python To-Do List
 
-The application was expanded with more advanced task-management features.
+The Python application was expanded with additional task-management functionality.
 
 ### Added
 
@@ -710,33 +513,111 @@ The application was expanded with more advanced task-management features.
 * Search tasks
 * Filter tasks
 * Persistent storage
-* Improved validation
+* Input validation
 * Error handling
 * Improved task organization
 
 ---
 
-# Project Goals
+## Version 3.0 — Web Version
 
-The main goal of this project is to build a practical Python application while continuously improving programming skills.
+The project was expanded from a command-line application into a browser-based application.
 
-Through this project, I am practicing how to:
+### Added
 
-1. Build an application from scratch
-2. Plan program functionality
-3. Organize Python code
-4. Create reusable functions
-5. Work with lists and dictionaries
-6. Handle user input
-7. Validate user input
-8. Implement application logic
-9. Manage and update data
-10. Work with files
-11. Handle programming errors
-12. Debug Python applications
-13. Use Git and GitHub
-14. Document a software project
-15. Improve an application through multiple versions
+* HTML interface
+* CSS styling
+* JavaScript functionality
+* Modern visual interface
+* Student-friendly design
+* Interactive task management
+* Browser-based task organization
+* Responsive layout
+* Improved user experience
+
+The web version represents the next stage of the project by applying programming concepts to frontend web development.
+
+---
+
+# Learning Objectives
+
+This project helps develop practical programming and web-development skills.
+
+## Python Fundamentals
+
+The Python version practices:
+
+* Variables
+* Strings
+* Integers
+* Booleans
+* Lists
+* Dictionaries
+* Functions
+* Loops
+* Conditional statements
+
+## Programming Logic
+
+The project demonstrates:
+
+* `if`
+* `elif`
+* `else`
+* `for` loops
+* `while` loops
+* Functions
+* Conditions
+* Menu-based program logic
+
+## User Input
+
+The Python application demonstrates how to:
+
+* Receive user input
+* Validate input
+* Convert input types
+* Handle invalid input
+* Create interactive command-line programs
+
+## Data Management
+
+The project practices:
+
+* Adding data
+* Updating data
+* Removing data
+* Searching data
+* Filtering data
+* Tracking task status
+* Organizing information
+
+## File Handling
+
+The Python version demonstrates:
+
+* Creating files
+* Reading files
+* Writing files
+* Saving application data
+* Loading saved data
+
+## Web Development
+
+The web version introduces:
+
+* HTML structure
+* CSS styling
+* JavaScript programming
+* DOM manipulation
+* Interactive webpage elements
+* Responsive design
+* Frontend application development
+* User interface design
+
+## Error Handling
+
+The Python version introduces exception handling to prevent unexpected crashes caused by invalid user input.
 
 ---
 
@@ -744,17 +625,43 @@ Through this project, I am practicing how to:
 
 This project is also part of my learning journey with **Git and GitHub**.
 
-Some of the skills practiced through this project include:
+Skills practiced include:
 
 * Creating repositories
 * Creating README files
 * Organizing project files
+* Creating project folders
 * Committing changes
 * Writing commit messages
 * Pushing code to GitHub
 * Updating existing projects
 * Versioning projects
-* Documenting applications
+* Documenting software projects
+
+---
+
+# Project Goals
+
+The main goal of this project is to continuously improve my programming and application-development skills.
+
+Through this project, I am practicing how to:
+
+1. Build an application from scratch
+2. Plan application functionality
+3. Organize project files
+4. Write Python code
+5. Write HTML and CSS
+6. Use JavaScript
+7. Create reusable functions
+8. Work with data
+9. Handle user input
+10. Validate information
+11. Implement application logic
+12. Create interactive web applications
+13. Debug applications
+14. Use Git and GitHub
+15. Document software projects
+16. Improve an application through multiple versions
 
 ---
 
@@ -762,9 +669,75 @@ Some of the skills practiced through this project include:
 
 This project was created primarily for **learning and practice**.
 
-It demonstrates how a beginner Python project can gradually become more structured and feature-rich as programming knowledge improves.
+It demonstrates how a beginner programming project can gradually develop into a more complete application.
 
-The project may continue to change as new Python concepts are learned and implemented.
+The project began as a simple Python command-line To-Do List and was later expanded into a web-based application. This progression allows me to practice both **Python programming and frontend web development** while learning how software projects can evolve over time.
+
+As I continue studying Information Technology, more features and improvements may be added.
+
+---
+
+# Future Improvements
+
+Possible future features include:
+
+* [ ] Task reminders
+* [ ] Automatic overdue detection
+* [ ] Recurring tasks
+* [ ] Advanced task sorting
+* [ ] Advanced filtering
+* [ ] Task statistics
+* [ ] Productivity tracking
+* [ ] Daily summaries
+* [ ] Weekly summaries
+* [ ] Calendar integration
+* [ ] SQLite database
+* [ ] JSON-based storage
+* [ ] User accounts
+* [ ] Login system
+* [ ] Desktop application
+* [ ] Mobile version
+* [ ] Cloud synchronization
+* [ ] Backend integration
+* [ ] Online database
+* [ ] User authentication
+* [ ] Cross-device synchronization
+
+---
+
+# Project Status
+
+**Current Status: Active Development**
+
+The project is continuously being improved as I learn new programming and web-development concepts.
+
+Current versions include:
+
+| Version        | Status                | Description                   |
+| -------------- | --------------------- | ----------------------------- |
+| Python Version | Completed / Improving | Command-line task management  |
+| Web Version    | Active Development    | Browser-based task management |
+
+---
+
+# Author
+
+**Jose Navoa**
+
+Student Developer
+
+This project is part of my learning journey in:
+
+* Information Technology
+* Python Programming
+* Web Development
+* HTML
+* CSS
+* JavaScript
+* Software Development
+* Problem Solving
+* Git and GitHub
+* Application Development
 
 ---
 
@@ -782,27 +755,12 @@ You are welcome to:
 
 ---
 
-# Author
-
-**Jose Navoa**
-
-Student Developer
-
-This project is part of my journey in learning:
-
-* Information Technology
-* Python Programming
-* Software Development
-* Problem Solving
-* Git and GitHub
-* Application Development
-
----
-
 # Acknowledgments
 
-This project was created as a beginner-to-intermediate Python programming project.
+This project was created as a beginner-to-intermediate programming project.
 
-It started as a simple command-line To-Do List and has been continuously improved to practice more advanced programming concepts and real-world application development.
+It started as a simple Python command-line To-Do List and has gradually evolved into a project containing both a **Python application and a web application**.
 
-More features and improvements may be added as I continue learning **Python, software development, and Information Technology**.
+The project reflects my progress as an Information Technology student and my continued learning in **Python, web development, software development, problem solving, and GitHub**.
+
+More features and improvements may be added as I continue learning and developing my programming skills.
