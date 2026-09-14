@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 
 FILE_NAME = "tasks.json"
 ARCHIVE_FILE = "archived_tasks.json"
+REPORT_FILE = "task_report.txt"
 
 
 # ==========================================
@@ -97,6 +98,43 @@ def add_task(tasks):
         except ValueError:
             print("Invalid date format.")
 
+    # NEW: Tags
+    tags_input = input(
+        "Tags (separate with commas) or leave blank: "
+    ).strip()
+
+    if tags_input:
+        tags = [
+            tag.strip()
+            for tag in tags_input.split(",")
+            if tag.strip()
+        ]
+    else:
+        tags = []
+
+    # NEW: Estimated time
+    while True:
+
+        estimated_time_input = input(
+            "Estimated time in minutes or leave blank: "
+        ).strip()
+
+        if estimated_time_input == "":
+            estimated_time = 0
+            break
+
+        try:
+            estimated_time = int(estimated_time_input)
+
+            if estimated_time < 0:
+                print("Time cannot be negative.")
+                continue
+
+            break
+
+        except ValueError:
+            print("Please enter a valid number.")
+
     task = {
         "id": generate_task_id(tasks),
         "title": title,
@@ -105,6 +143,15 @@ def add_task(tasks):
         "category": category,
         "due_date": due_date,
         "completed": False,
+
+        # NEW FEATURES
+        "progress": 0,
+        "status": "Pending",
+        "tags": tags,
+        "estimated_time": estimated_time,
+        "time_spent": 0,
+        "focus": False,
+
         "created_at": datetime.now().strftime(
             "%Y-%m-%d %H:%M"
         )
@@ -123,7 +170,16 @@ def add_task(tasks):
 
 def display_task(task):
 
-    status = "Completed" if task["completed"] else "Pending"
+    completed = task.get("completed", False)
+
+    if completed:
+        status = "Completed"
+    else:
+        status = task.get("status", "Pending")
+
+    progress = task.get("progress", 100 if completed else 0)
+
+    tags = task.get("tags", [])
 
     print(
         f"\nID: {task['id']}"
@@ -133,6 +189,14 @@ def display_task(task):
         f"\nCategory: {task['category']}"
         f"\nDue Date: {task['due_date'] or 'None'}"
         f"\nStatus: {status}"
+        f"\nProgress: {progress}%"
+        f"\nEstimated Time: "
+        f"{task.get('estimated_time', 0)} minutes"
+        f"\nTime Spent: "
+        f"{task.get('time_spent', 0)} minutes"
+        f"\nTags: {', '.join(tags) if tags else 'None'}"
+        f"\nFocus Task: "
+        f"{'Yes' if task.get('focus', False) else 'No'}"
         f"\nCreated: {task['created_at']}"
     )
 
@@ -196,6 +260,18 @@ def toggle_task(tasks):
         return
 
     task["completed"] = not task["completed"]
+
+    if task["completed"]:
+
+        task["progress"] = 100
+        task["status"] = "Completed"
+
+    else:
+
+        if task.get("progress", 0) >= 100:
+            task["progress"] = 0
+
+        task["status"] = "Pending"
 
     save_tasks(tasks)
 
@@ -284,6 +360,7 @@ def edit_task(tasks):
             break
 
         try:
+
             datetime.strptime(
                 new_due_date,
                 "%Y-%m-%d"
@@ -294,6 +371,43 @@ def edit_task(tasks):
 
         except ValueError:
             print("Invalid date.")
+
+    # NEW: Edit tags
+    new_tags = input(
+        f"Tags [{', '.join(task.get('tags', [])) or 'None'}]: "
+    ).strip()
+
+    if new_tags:
+        task["tags"] = [
+            tag.strip()
+            for tag in new_tags.split(",")
+            if tag.strip()
+        ]
+
+    # NEW: Edit estimated time
+    while True:
+
+        new_time = input(
+            f"Estimated time [{task.get('estimated_time', 0)}] "
+            "minutes: "
+        ).strip()
+
+        if new_time == "":
+            break
+
+        try:
+
+            new_time = int(new_time)
+
+            if new_time < 0:
+                print("Time cannot be negative.")
+                continue
+
+            task["estimated_time"] = new_time
+            break
+
+        except ValueError:
+            print("Invalid number.")
 
     save_tasks(tasks)
 
@@ -361,10 +475,15 @@ def search_tasks(tasks):
 
     for task in tasks:
 
+        searchable_tags = " ".join(
+            task.get("tags", [])
+        )
+
         if (
             search in task["title"].lower()
             or search in task["description"].lower()
             or search in task["category"].lower()
+            or search in searchable_tags.lower()
         ):
             results.append(task)
 
@@ -398,6 +517,10 @@ def filter_tasks(tasks):
     print("4. Medium Priority")
     print("5. Low Priority")
     print("6. Category")
+    print("7. In Progress")
+    print("8. Progress 0%")
+    print("9. Progress 50% or more")
+    print("10. Has Tags")
 
     choice = input(
         "\nChoose filter: "
@@ -451,6 +574,34 @@ def filter_tasks(tasks):
             if task["category"].lower() == category
         ]
 
+    elif choice == "7":
+
+        results = [
+            task for task in tasks
+            if task.get("status") == "In Progress"
+        ]
+
+    elif choice == "8":
+
+        results = [
+            task for task in tasks
+            if task.get("progress", 0) == 0
+        ]
+
+    elif choice == "9":
+
+        results = [
+            task for task in tasks
+            if task.get("progress", 0) >= 50
+        ]
+
+    elif choice == "10":
+
+        results = [
+            task for task in tasks
+            if task.get("tags", [])
+        ]
+
     else:
 
         print("Invalid option.")
@@ -480,6 +631,8 @@ def sort_tasks(tasks):
     print("2. Due Date")
     print("3. Name")
     print("4. Status")
+    print("5. Progress")
+    print("6. Estimated Time")
 
     choice = input(
         "Choose sorting method: "
@@ -496,7 +649,10 @@ def sort_tasks(tasks):
         sorted_tasks = sorted(
             tasks,
             key=lambda task:
-            priority_order[task["priority"]]
+            priority_order.get(
+                task["priority"],
+                4
+            )
         )
 
     elif choice == "2":
@@ -520,7 +676,24 @@ def sort_tasks(tasks):
         sorted_tasks = sorted(
             tasks,
             key=lambda task:
-            task["completed"]
+            task.get("status", "Pending")
+        )
+
+    elif choice == "5":
+
+        sorted_tasks = sorted(
+            tasks,
+            key=lambda task:
+            task.get("progress", 0),
+            reverse=True
+        )
+
+    elif choice == "6":
+
+        sorted_tasks = sorted(
+            tasks,
+            key=lambda task:
+            task.get("estimated_time", 0)
         )
 
     else:
@@ -567,6 +740,21 @@ def show_statistics(tasks):
         if task["priority"] == "Low"
     )
 
+    in_progress = sum(
+        1 for task in tasks
+        if task.get("status") == "In Progress"
+    )
+
+    total_time_spent = sum(
+        task.get("time_spent", 0)
+        for task in tasks
+    )
+
+    estimated_time = sum(
+        task.get("estimated_time", 0)
+        for task in tasks
+    )
+
     categories = {}
 
     for task in tasks:
@@ -580,11 +768,20 @@ def show_statistics(tasks):
     print(f"Total Tasks: {total}")
     print(f"Completed: {completed}")
     print(f"Pending: {pending}")
+    print(f"In Progress: {in_progress}")
 
     print("\nPriority Breakdown:")
     print(f"High: {high}")
     print(f"Medium: {medium}")
     print(f"Low: {low}")
+
+    print("\nTime Tracking:")
+    print(
+        f"Estimated Time: {estimated_time} minutes"
+    )
+    print(
+        f"Time Spent: {total_time_spent} minutes"
+    )
 
     print("\nCategories:")
 
@@ -645,7 +842,7 @@ def clear_completed(tasks):
 
 
 # ==========================================
-# NEW FEATURE: DASHBOARD
+# PRODUCTIVITY DASHBOARD
 # ==========================================
 
 def productivity_dashboard(tasks):
@@ -668,6 +865,11 @@ def productivity_dashboard(tasks):
         1 for task in tasks
         if task["priority"] == "High"
         and not task["completed"]
+    )
+
+    in_progress = sum(
+        1 for task in tasks
+        if task.get("status") == "In Progress"
     )
 
     today = date.today().strftime("%Y-%m-%d")
@@ -707,12 +909,28 @@ def productivity_dashboard(tasks):
     else:
         completion_rate = 0
 
+    average_progress = (
+        sum(
+            task.get(
+                "progress",
+                100 if task["completed"] else 0
+            )
+            for task in tasks
+        ) / total
+        if total > 0
+        else 0
+    )
+
     print(f"\nTotal Tasks:       {total}")
     print(f"Completed:         {completed}")
     print(f"Pending:           {pending}")
+    print(f"In Progress:       {in_progress}")
     print(f"High Priority:     {high_priority}")
     print(f"Due Today:         {due_today}")
     print(f"Overdue:           {overdue}")
+    print(
+        f"Average Progress:  {average_progress:.1f}%"
+    )
 
     print(
         f"\nCompletion Rate: {completion_rate:.1f}%"
@@ -736,7 +954,7 @@ def productivity_dashboard(tasks):
 
 
 # ==========================================
-# NEW FEATURE: TODAY'S TASKS
+# TODAY'S TASKS
 # ==========================================
 
 def todays_tasks(tasks):
@@ -769,7 +987,7 @@ def todays_tasks(tasks):
 
 
 # ==========================================
-# NEW FEATURE: OVERDUE TASKS
+# OVERDUE TASKS
 # ==========================================
 
 def overdue_tasks(tasks):
@@ -818,7 +1036,7 @@ def overdue_tasks(tasks):
 
 
 # ==========================================
-# NEW FEATURE: UPCOMING TASKS
+# UPCOMING TASKS
 # ==========================================
 
 def upcoming_tasks(tasks):
@@ -868,7 +1086,7 @@ def upcoming_tasks(tasks):
 
 
 # ==========================================
-# NEW FEATURE: ADD TASK NOTES
+# ADD TASK NOTE
 # ==========================================
 
 def add_task_note(tasks):
@@ -919,7 +1137,7 @@ def add_task_note(tasks):
 
 
 # ==========================================
-# NEW FEATURE: VIEW TASK NOTES
+# VIEW TASK NOTES
 # ==========================================
 
 def view_task_notes(tasks):
@@ -965,7 +1183,7 @@ def view_task_notes(tasks):
 
 
 # ==========================================
-# NEW FEATURE: DUPLICATE TASK
+# DUPLICATE TASK
 # ==========================================
 
 def duplicate_task(tasks):
@@ -999,6 +1217,10 @@ def duplicate_task(tasks):
     )
 
     new_task["completed"] = False
+    new_task["progress"] = 0
+    new_task["status"] = "Pending"
+    new_task["time_spent"] = 0
+    new_task["focus"] = False
 
     new_task["created_at"] = (
         datetime.now().strftime(
@@ -1014,7 +1236,7 @@ def duplicate_task(tasks):
 
 
 # ==========================================
-# NEW FEATURE: COMPLETE MULTIPLE TASKS
+# COMPLETE MULTIPLE TASKS
 # ==========================================
 
 def quick_complete(tasks):
@@ -1057,6 +1279,9 @@ def quick_complete(tasks):
         if task and not task["completed"]:
 
             task["completed"] = True
+            task["progress"] = 100
+            task["status"] = "Completed"
+
             completed_count += 1
 
     save_tasks(tasks)
@@ -1067,7 +1292,7 @@ def quick_complete(tasks):
 
 
 # ==========================================
-# NEW FEATURE: CATEGORY SUMMARY
+# CATEGORY SUMMARY
 # ==========================================
 
 def category_summary(tasks):
@@ -1121,7 +1346,7 @@ def category_summary(tasks):
 
 
 # ==========================================
-# NEW FEATURE: PRODUCTIVITY SCORE
+# PRODUCTIVITY SCORE
 # ==========================================
 
 def productivity_score(tasks):
@@ -1178,7 +1403,7 @@ def productivity_score(tasks):
 
 
 # ==========================================
-# NEW FEATURE: WEEKLY REPORT
+# WEEKLY REPORT
 # ==========================================
 
 def weekly_report(tasks):
@@ -1247,7 +1472,7 @@ def weekly_report(tasks):
 
 
 # ==========================================
-# NEW FEATURE: ARCHIVE COMPLETED TASKS
+# ARCHIVE COMPLETED TASKS
 # ==========================================
 
 def archive_completed(tasks):
@@ -1308,7 +1533,7 @@ def archive_completed(tasks):
 
 
 # ==========================================
-# NEW FEATURE: VIEW ARCHIVED TASKS
+# VIEW ARCHIVED TASKS
 # ==========================================
 
 def view_archived_tasks():
@@ -1345,7 +1570,7 @@ def view_archived_tasks():
 
 
 # ==========================================
-# NEW FEATURE: FOCUS TASK
+# SET FOCUS TASK
 # ==========================================
 
 def set_focus_task(tasks):
@@ -1384,7 +1609,7 @@ def set_focus_task(tasks):
 
 
 # ==========================================
-# NEW FEATURE: VIEW FOCUS TASK
+# VIEW FOCUS TASK
 # ==========================================
 
 def view_focus_task(tasks):
@@ -1402,7 +1627,7 @@ def view_focus_task(tasks):
 
 
 # ==========================================
-# NEW FEATURE: REMOVE FOCUS TASK
+# REMOVE FOCUS TASK
 # ==========================================
 
 def remove_focus_task(tasks):
@@ -1428,7 +1653,7 @@ def remove_focus_task(tasks):
 
 
 # ==========================================
-# NEW FEATURE: DELETE ALL TASKS
+# DELETE ALL TASKS
 # ==========================================
 
 def delete_all_tasks(tasks):
@@ -1462,7 +1687,7 @@ def delete_all_tasks(tasks):
 
 
 # ==========================================
-# NEW FEATURE: POMODORO TIMER
+# POMODORO TIMER
 # ==========================================
 
 def pomodoro_timer():
@@ -1548,7 +1773,693 @@ def pomodoro_timer():
 
 
 # ==========================================
-# NEW FEATURE: PRODUCTIVITY MENU
+# NEW FEATURE: UPDATE TASK PROGRESS
+# ==========================================
+
+def update_task_progress(tasks):
+
+    print("\n========== UPDATE TASK PROGRESS ==========")
+
+    if not tasks:
+
+        print("No tasks available.")
+        return
+
+    try:
+
+        task_id = int(
+            input("Enter task ID: ")
+        )
+
+    except ValueError:
+
+        print("Invalid task ID.")
+        return
+
+    task = find_task(tasks, task_id)
+
+    if task is None:
+
+        print("Task not found.")
+        return
+
+    try:
+
+        progress = int(
+            input("Enter progress (0-100): ")
+        )
+
+    except ValueError:
+
+        print("Please enter a valid number.")
+        return
+
+    if progress < 0 or progress > 100:
+
+        print("Progress must be between 0 and 100.")
+        return
+
+    task["progress"] = progress
+
+    if progress == 100:
+
+        task["completed"] = True
+        task["status"] = "Completed"
+
+    elif progress > 0:
+
+        task["completed"] = False
+        task["status"] = "In Progress"
+
+    else:
+
+        task["completed"] = False
+        task["status"] = "Pending"
+
+    save_tasks(tasks)
+
+    print(
+        f"Task progress updated to {progress}%."
+    )
+
+
+# ==========================================
+# NEW FEATURE: SET IN PROGRESS
+# ==========================================
+
+def set_in_progress(tasks):
+
+    print("\n========== SET TASK IN PROGRESS ==========")
+
+    if not tasks:
+
+        print("No tasks available.")
+        return
+
+    try:
+
+        task_id = int(
+            input("Enter task ID: ")
+        )
+
+    except ValueError:
+
+        print("Invalid task ID.")
+        return
+
+    task = find_task(tasks, task_id)
+
+    if task is None:
+
+        print("Task not found.")
+        return
+
+    if task["completed"]:
+
+        print("This task is already completed.")
+        return
+
+    task["status"] = "In Progress"
+
+    if task.get("progress", 0) == 0:
+        task["progress"] = 1
+
+    save_tasks(tasks)
+
+    print(
+        f"'{task['title']}' is now in progress."
+    )
+
+
+# ==========================================
+# NEW FEATURE: ADD TIME SPENT
+# ==========================================
+
+def add_time_spent(tasks):
+
+    print("\n========== ADD TIME SPENT ==========")
+
+    if not tasks:
+
+        print("No tasks available.")
+        return
+
+    try:
+
+        task_id = int(
+            input("Enter task ID: ")
+        )
+
+    except ValueError:
+
+        print("Invalid task ID.")
+        return
+
+    task = find_task(tasks, task_id)
+
+    if task is None:
+
+        print("Task not found.")
+        return
+
+    try:
+
+        minutes = int(
+            input("Minutes spent: ")
+        )
+
+    except ValueError:
+
+        print("Invalid number.")
+        return
+
+    if minutes <= 0:
+
+        print("Minutes must be greater than 0.")
+        return
+
+    task["time_spent"] = (
+        task.get("time_spent", 0)
+        + minutes
+    )
+
+    save_tasks(tasks)
+
+    print(
+        f"{minutes} minute(s) added to "
+        f"'{task['title']}'."
+    )
+
+
+# ==========================================
+# NEW FEATURE: VIEW PROGRESS
+# ==========================================
+
+def view_progress(tasks):
+
+    print("\n========== TASK PROGRESS ==========")
+
+    if not tasks:
+
+        print("No tasks available.")
+        return
+
+    for task in tasks:
+
+        progress = task.get(
+            "progress",
+            100 if task["completed"] else 0
+        )
+
+        bar_size = 20
+
+        filled = int(
+            progress / 100 * bar_size
+        )
+
+        bar = "#" * filled + "-" * (
+            bar_size - filled
+        )
+
+        print(
+            f"\n{task['id']}. {task['title']}"
+        )
+
+        print(
+            f"[{bar}] {progress}%"
+        )
+
+        print(
+            f"Status: {task.get('status', 'Pending')}"
+        )
+
+
+# ==========================================
+# NEW FEATURE: DEADLINE REMINDERS
+# ==========================================
+
+def deadline_reminders(tasks):
+
+    print("\n========== DEADLINE REMINDERS ==========")
+
+    today = date.today()
+
+    found = False
+
+    for task in tasks:
+
+        if task["completed"]:
+            continue
+
+        if not task["due_date"]:
+            continue
+
+        try:
+
+            due = datetime.strptime(
+                task["due_date"],
+                "%Y-%m-%d"
+            ).date()
+
+        except ValueError:
+
+            continue
+
+        days_left = (
+            due - today
+        ).days
+
+        if days_left < 0:
+
+            print(
+                f"\nOVERDUE: {task['title']}"
+            )
+
+            print(
+                f"Due: {task['due_date']}"
+            )
+
+            found = True
+
+        elif days_left == 0:
+
+            print(
+                f"\nDUE TODAY: {task['title']}"
+            )
+
+            found = True
+
+        elif days_left <= 3:
+
+            print(
+                f"\nDUE SOON: {task['title']}"
+            )
+
+            print(
+                f"Due in {days_left} day(s)"
+            )
+
+            print(
+                f"Due Date: {task['due_date']}"
+            )
+
+            found = True
+
+    if not found:
+
+        print(
+            "No urgent deadlines in the next 3 days."
+        )
+
+
+# ==========================================
+# NEW FEATURE: PRODUCTIVITY STREAK
+# ==========================================
+
+def productivity_streak(tasks):
+
+    print("\n========== PRODUCTIVITY STREAK ==========")
+
+    completed_dates = []
+
+    for task in tasks:
+
+        if not task.get("completed"):
+            continue
+
+        completed_at = task.get(
+            "completed_at"
+        )
+
+        if completed_at:
+
+            try:
+
+                completed_date = datetime.strptime(
+                    completed_at,
+                    "%Y-%m-%d %H:%M"
+                ).date()
+
+                completed_dates.append(
+                    completed_date
+                )
+
+            except ValueError:
+
+                pass
+
+    if not completed_dates:
+
+        print(
+            "No completion history available yet."
+        )
+
+        print(
+            "Complete tasks to start your streak."
+        )
+
+        return
+
+    completed_dates = sorted(
+        set(completed_dates),
+        reverse=True
+    )
+
+    streak = 0
+
+    current_date = date.today()
+
+    for completed_date in completed_dates:
+
+        if completed_date == current_date:
+
+            streak += 1
+            current_date -= timedelta(days=1)
+
+        elif completed_date < current_date:
+
+            break
+
+    print(
+        f"\nCurrent Productivity Streak: "
+        f"{streak} day(s)"
+    )
+
+    if streak == 0:
+
+        print(
+            "Complete a task today to start "
+            "or continue your streak."
+        )
+
+    elif streak < 3:
+
+        print(
+            "Good start. Keep going!"
+        )
+
+    elif streak < 7:
+
+        print(
+            "Great consistency!"
+        )
+
+    else:
+
+        print(
+            "Excellent streak! Keep up the habit."
+        )
+
+
+# ==========================================
+# NEW FEATURE: RESTORE ARCHIVED TASK
+# ==========================================
+
+def restore_archived_task(tasks):
+
+    print("\n========== RESTORE ARCHIVED TASK ==========")
+
+    try:
+
+        with open(
+            ARCHIVE_FILE,
+            "r"
+        ) as file:
+
+            archived = json.load(file)
+
+    except FileNotFoundError:
+
+        print("No archive file found.")
+        return
+
+    except json.JSONDecodeError:
+
+        print("Archive file is corrupted.")
+        return
+
+    if not archived:
+
+        print("No archived tasks.")
+        return
+
+    for task in archived:
+
+        print(
+            f"{task['id']}. {task['title']}"
+        )
+
+    try:
+
+        task_id = int(
+            input(
+                "\nEnter archived task ID to restore: "
+            )
+        )
+
+    except ValueError:
+
+        print("Invalid ID.")
+        return
+
+    task = None
+
+    for archived_task in archived:
+
+        if archived_task["id"] == task_id:
+
+            task = archived_task
+            break
+
+    if task is None:
+
+        print("Archived task not found.")
+        return
+
+    new_task = task.copy()
+
+    new_task["id"] = generate_task_id(tasks)
+
+    new_task["completed"] = False
+    new_task["progress"] = 0
+    new_task["status"] = "Pending"
+    new_task["focus"] = False
+
+    tasks.append(new_task)
+
+    archived.remove(task)
+
+    with open(
+        ARCHIVE_FILE,
+        "w"
+    ) as file:
+
+        json.dump(
+            archived,
+            file,
+            indent=4
+        )
+
+    save_tasks(tasks)
+
+    print(
+        f"'{new_task['title']}' restored successfully."
+    )
+
+
+# ==========================================
+# NEW FEATURE: CLEAR ARCHIVE
+# ==========================================
+
+def clear_archive():
+
+    print("\n========== CLEAR ARCHIVE ==========")
+
+    try:
+
+        with open(
+            ARCHIVE_FILE,
+            "r"
+        ) as file:
+
+            archived = json.load(file)
+
+    except FileNotFoundError:
+
+        print("No archived tasks.")
+        return
+
+    except json.JSONDecodeError:
+
+        archived = []
+
+    if not archived:
+
+        print("Archive is already empty.")
+        return
+
+    print(
+        f"There are {len(archived)} "
+        "archived task(s)."
+    )
+
+    confirmation = input(
+        "Type CLEAR to permanently delete the archive: "
+    )
+
+    if confirmation == "CLEAR":
+
+        with open(
+            ARCHIVE_FILE,
+            "w"
+        ) as file:
+
+            json.dump([], file, indent=4)
+
+        print("Archive cleared successfully.")
+
+    else:
+
+        print("Operation cancelled.")
+
+
+# ==========================================
+# NEW FEATURE: EXPORT TASK REPORT
+# ==========================================
+
+def export_task_report(tasks):
+
+    print("\n========== EXPORT TASK REPORT ==========")
+
+    if not tasks:
+
+        print("There are no tasks to export.")
+        return
+
+    try:
+
+        with open(
+            REPORT_FILE,
+            "w"
+        ) as file:
+
+            file.write(
+                "TO-DO LIST PRODUCTIVITY REPORT\n"
+            )
+
+            file.write(
+                "=" * 50 + "\n\n"
+            )
+
+            file.write(
+                f"Generated: "
+                f"{datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n"
+            )
+
+            total = len(tasks)
+
+            completed = sum(
+                1 for task in tasks
+                if task["completed"]
+            )
+
+            pending = total - completed
+
+            file.write(
+                f"Total Tasks: {total}\n"
+            )
+
+            file.write(
+                f"Completed: {completed}\n"
+            )
+
+            file.write(
+                f"Pending: {pending}\n\n"
+            )
+
+            file.write(
+                "TASK DETAILS\n"
+            )
+
+            file.write(
+                "=" * 50 + "\n"
+            )
+
+            for task in tasks:
+
+                progress = task.get(
+                    "progress",
+                    100 if task["completed"] else 0
+                )
+
+                file.write(
+                    f"\nID: {task['id']}\n"
+                )
+
+                file.write(
+                    f"Task: {task['title']}\n"
+                )
+
+                file.write(
+                    f"Description: "
+                    f"{task['description']}\n"
+                )
+
+                file.write(
+                    f"Priority: "
+                    f"{task['priority']}\n"
+                )
+
+                file.write(
+                    f"Category: "
+                    f"{task['category']}\n"
+                )
+
+                file.write(
+                    f"Due Date: "
+                    f"{task['due_date'] or 'None'}\n"
+                )
+
+                file.write(
+                    f"Status: "
+                    f"{task.get('status', 'Pending')}\n"
+                )
+
+                file.write(
+                    f"Progress: {progress}%\n"
+                )
+
+                file.write(
+                    f"Estimated Time: "
+                    f"{task.get('estimated_time', 0)} minutes\n"
+                )
+
+                file.write(
+                    f"Time Spent: "
+                    f"{task.get('time_spent', 0)} minutes\n"
+                )
+
+                file.write(
+                    f"Tags: "
+                    f"{', '.join(task.get('tags', [])) or 'None'}\n"
+                )
+
+                file.write(
+                    "-" * 40 + "\n"
+                )
+
+        print(
+            f"Report exported successfully to "
+            f"{REPORT_FILE}"
+        )
+
+    except OSError:
+
+        print("Could not create the report file.")
+
+
+# ==========================================
+# PRODUCTIVITY MENU
 # ==========================================
 
 def productivity_menu(tasks):
@@ -1568,7 +2479,11 @@ def productivity_menu(tasks):
         print("6. Weekly Report")
         print("7. Category Summary")
         print("8. Pomodoro Timer")
-        print("9. Back")
+        print("9. Deadline Reminders")
+        print("10. Productivity Streak")
+        print("11. View Task Progress")
+        print("12. Export Task Report")
+        print("13. Back")
 
         print("=" * 45)
 
@@ -1610,6 +2525,22 @@ def productivity_menu(tasks):
 
         elif choice == "9":
 
+            deadline_reminders(tasks)
+
+        elif choice == "10":
+
+            productivity_streak(tasks)
+
+        elif choice == "11":
+
+            view_progress(tasks)
+
+        elif choice == "12":
+
+            export_task_report(tasks)
+
+        elif choice == "13":
+
             break
 
         else:
@@ -1618,7 +2549,7 @@ def productivity_menu(tasks):
 
 
 # ==========================================
-# NEW FEATURE: TASK TOOLS MENU
+# TASK TOOLS MENU
 # ==========================================
 
 def task_tools_menu(tasks):
@@ -1640,7 +2571,12 @@ def task_tools_menu(tasks):
         print("8. Archive Completed Tasks")
         print("9. View Archived Tasks")
         print("10. Delete All Tasks")
-        print("11. Back")
+        print("11. Update Task Progress")
+        print("12. Set Task In Progress")
+        print("13. Add Time Spent")
+        print("14. Restore Archived Task")
+        print("15. Clear Archive")
+        print("16. Back")
 
         print("=" * 45)
 
@@ -1690,6 +2626,26 @@ def task_tools_menu(tasks):
 
         elif choice == "11":
 
+            update_task_progress(tasks)
+
+        elif choice == "12":
+
+            set_in_progress(tasks)
+
+        elif choice == "13":
+
+            add_time_spent(tasks)
+
+        elif choice == "14":
+
+            restore_archived_task(tasks)
+
+        elif choice == "15":
+
+            clear_archive()
+
+        elif choice == "16":
+
             break
 
         else:
@@ -1708,9 +2664,9 @@ def main():
     while True:
 
         print("\n")
-        print("=" * 45)
-        print("              TO-DO LIST")
-        print("=" * 45)
+        print("=" * 50)
+        print("                 TO-DO LIST")
+        print("=" * 50)
 
         print("1.  View All Tasks")
         print("2.  Add Task")
@@ -1726,46 +2682,58 @@ def main():
         print("12. Task Tools")
         print("13. Exit")
 
-        print("=" * 45)
+        print("=" * 50)
 
         choice = input(
             "Choose an option: "
         ).strip()
 
         if choice == "1":
+
             view_tasks(tasks)
 
         elif choice == "2":
+
             add_task(tasks)
 
         elif choice == "3":
+
             edit_task(tasks)
 
         elif choice == "4":
+
             toggle_task(tasks)
 
         elif choice == "5":
+
             delete_task(tasks)
 
         elif choice == "6":
+
             search_tasks(tasks)
 
         elif choice == "7":
+
             filter_tasks(tasks)
 
         elif choice == "8":
+
             sort_tasks(tasks)
 
         elif choice == "9":
+
             show_statistics(tasks)
 
         elif choice == "10":
+
             clear_completed(tasks)
 
         elif choice == "11":
+
             productivity_menu(tasks)
 
         elif choice == "12":
+
             task_tools_menu(tasks)
 
         elif choice == "13":
