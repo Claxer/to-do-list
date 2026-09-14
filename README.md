@@ -4,7 +4,7 @@ A beginner-friendly **To-Do List application available in both Python and Web ve
 
 The project originally started as a basic Python command-line application and has gradually been improved with additional task-management and productivity features. A **web version** was later added to provide a more modern, visual, and student-friendly experience.
 
-The Python version now includes features such as **productivity dashboards, today's tasks, overdue tasks, upcoming tasks, task notes, focus tasks, productivity scores, weekly reports, task archiving, multiple-task completion, and a Pomodoro focus timer**.
+The Python version now includes features such as **productivity dashboards, today's tasks, overdue tasks, upcoming tasks, task notes, focus tasks, productivity scores, weekly reports, task archiving, multiple-task completion, task progress tracking, time tracking, task tags, deadline reminders, productivity streaks, task restoration, task report exporting, and a Pomodoro focus timer**.
 
 This project is part of my learning journey as an **Information Technology student**, where I am practicing programming, web development, problem solving, application design, and GitHub project management.
 
@@ -39,6 +39,8 @@ It has developed from a simple task list into a more complete **personal product
 * Clear completed tasks
 * Delete all tasks with confirmation
 * Track task status
+* Track task progress
+* Set tasks as In Progress
 * Prevent empty tasks from being added
 
 ## Task Organization
@@ -51,8 +53,14 @@ Tasks can contain information such as:
 * Category
 * Due date
 * Completion status
+* Task progress
+* Task status
 * Creation date
+* Completion date
 * Notes
+* Tags
+* Estimated time
+* Actual time spent
 * Focus status
 
 ## Priority Levels
@@ -83,6 +91,127 @@ Users can also view a summary of how many tasks belong to each category.
 
 ---
 
+# Task Progress Tracking
+
+The Python version now allows users to manually track the progress of individual tasks.
+
+Progress can be set between:
+
+```text
+0% - 100%
+```
+
+The task status automatically changes depending on its progress.
+
+```text
+0%      → Pending
+1-99%   → In Progress
+100%    → Completed
+```
+
+Example:
+
+```text
+Task: Finish Python Project
+Progress: 75%
+Status: In Progress
+```
+
+This provides more information than simply using completed or pending.
+
+## Progress Viewer
+
+The application can display a visual progress bar for each task.
+
+Example:
+
+```text
+1. Finish Python Project
+
+[###############-----] 75%
+Status: In Progress
+```
+
+This makes it easier to see how much work has been completed.
+
+---
+
+# Task Status
+
+Tasks can now have different statuses.
+
+Current statuses include:
+
+```text
+Pending
+In Progress
+Completed
+```
+
+Users can manually set a task to **In Progress**, or the status can automatically change when task progress is updated.
+
+This gives users a better understanding of which tasks have been started and which ones have not.
+
+---
+
+# Task Tags
+
+Tasks can now have multiple tags.
+
+Example:
+
+```text
+Tags:
+Python, School, Assignment
+```
+
+Tags can be used to provide additional information about a task.
+
+For example:
+
+```text
+exam
+project
+urgent
+programming
+personal
+```
+
+Tags are also included in the task search system, making it easier to find tasks based on specific labels.
+
+---
+
+# Estimated Task Time
+
+Users can now enter an estimated amount of time required to complete a task.
+
+Example:
+
+```text
+Estimated Time: 120 minutes
+```
+
+This can help users plan their workload and understand how much time their tasks may require.
+
+---
+
+# Time Tracking
+
+The application now allows users to record the actual amount of time spent working on a task.
+
+Example:
+
+```text
+Estimated Time: 120 minutes
+Time Spent: 90 minutes
+```
+
+Users can add additional minutes as they continue working on a task.
+
+This provides a basic way to compare estimated work time with actual work time.
+
+---
+
 # Productivity Features
 
 The Python version now includes additional features designed to help users manage their workload and become more productive.
@@ -96,9 +225,11 @@ It displays information such as:
 * Total tasks
 * Completed tasks
 * Pending tasks
+* In-progress tasks
 * High-priority tasks
 * Tasks due today
 * Overdue tasks
+* Average task progress
 * Completion rate
 * Visual progress bar
 
@@ -110,9 +241,11 @@ Example:
 Total Tasks:       15
 Completed:         8
 Pending:           7
+In Progress:       3
 High Priority:     3
 Due Today:         2
 Overdue:           1
+Average Progress:  63.5%
 
 Completion Rate: 53.3%
 
@@ -188,6 +321,34 @@ Due Date: 2026-09-19
 
 ---
 
+# Deadline Reminders
+
+The new **Deadline Reminders** feature checks tasks that are overdue or approaching their due dates.
+
+The application identifies:
+
+* Overdue tasks
+* Tasks due today
+* Tasks due within the next three days
+
+Example:
+
+```text
+========== DEADLINE REMINDERS ==========
+
+OVERDUE: Finish Database Activity
+Due: 2026-09-12
+
+DUE TODAY: Submit Assignment
+
+DUE SOON: Prepare Presentation
+Due in 2 day(s)
+```
+
+This gives users a quick reminder of deadlines that require attention.
+
+---
+
 # Task Notes
 
 Users can attach additional notes to individual tasks.
@@ -243,6 +404,26 @@ Good job! You are making strong progress.
 ```
 
 The application provides different messages depending on the user's completion percentage.
+
+---
+
+# Productivity Streak
+
+The new **Productivity Streak** feature tracks consecutive days on which tasks have been completed.
+
+Example:
+
+```text
+========== PRODUCTIVITY STREAK ==========
+
+Current Productivity Streak: 5 day(s)
+
+Great consistency!
+```
+
+The feature encourages users to maintain consistent productivity habits.
+
+Task completion timestamps are used to determine completion dates.
 
 ---
 
@@ -317,6 +498,8 @@ Task IDs: 1, 3, 5
 
 This is useful when several related tasks have been completed and the user does not want to update them individually.
 
+When tasks are completed using this feature, their progress is also updated to **100%** and their status becomes **Completed**.
+
 ---
 
 # Duplicate Tasks
@@ -331,6 +514,15 @@ Study Python
 
 Duplicated:
 Study Python (Copy)
+```
+
+The duplicated task starts as a new pending task with:
+
+```text
+Progress: 0%
+Status: Pending
+Time Spent: 0 minutes
+Focus: No
 ```
 
 This can be useful for similar assignments, repeated project tasks, or tasks that share the same information.
@@ -351,9 +543,100 @@ Users can:
 
 * Archive completed tasks
 * View archived tasks
+* Restore archived tasks
 * Keep completed work separate from current tasks
+* Clear the archive when needed
 
 This helps keep the main task list clean while preserving previous tasks.
+
+---
+
+# Restore Archived Tasks
+
+The new **Restore Archived Task** feature allows users to bring a task back from the archive.
+
+Example:
+
+```text
+========== RESTORE ARCHIVED TASK ==========
+
+1. Finish Python Assignment
+2. Submit Database Project
+
+Enter archived task ID to restore:
+```
+
+When restored, the task becomes a new active task with:
+
+```text
+Status: Pending
+Progress: 0%
+Focus: No
+```
+
+This allows previously archived work to be reused when necessary.
+
+---
+
+# Clear Archive
+
+Users can permanently remove all archived tasks.
+
+The application requires the user to type:
+
+```text
+CLEAR
+```
+
+before the archive is permanently cleared.
+
+This confirmation helps prevent accidental deletion.
+
+---
+
+# Export Task Report
+
+The application now allows users to export their current tasks into a text report.
+
+The report is saved as:
+
+```text
+task_report.txt
+```
+
+The exported report contains information such as:
+
+* Total tasks
+* Completed tasks
+* Pending tasks
+* Task names
+* Descriptions
+* Priorities
+* Categories
+* Due dates
+* Status
+* Progress
+* Estimated time
+* Actual time spent
+* Tags
+
+Example:
+
+```text
+TO-DO LIST PRODUCTIVITY REPORT
+==================================================
+
+Generated: 2026-09-14 18:00
+
+Total Tasks: 15
+Completed: 8
+Pending: 7
+
+TASK DETAILS
+==================================================
+```
+
+This provides a simple way to create a readable backup or summary of the current task list.
 
 ---
 
@@ -403,8 +686,22 @@ Tasks can also be filtered by:
 * Medium priority
 * Low priority
 * Category
+* In Progress
+* 0% progress
+* 50% progress or higher
+* Tasks with tags
 
-This makes it easier to find specific tasks in a larger task list.
+Search can also find tasks using their tags.
+
+For example, searching for:
+
+```text
+Python
+```
+
+can find a task where `Python` is included in its title, description, category, or tags.
+
+This makes the search system more useful as the task list becomes larger.
 
 ---
 
@@ -418,8 +715,12 @@ Available sorting options include:
 * Due date
 * Name
 * Status
+* Progress
+* Estimated time
 
 This allows users to organize their task list based on what they need to focus on.
+
+For example, users can sort by progress to see which tasks are closest to completion.
 
 ---
 
@@ -432,12 +733,35 @@ It can display:
 * Total tasks
 * Completed tasks
 * Pending tasks
+* In-progress tasks
 * High-priority tasks
 * Medium-priority tasks
 * Low-priority tasks
+* Estimated total time
+* Total time spent
 * Category breakdown
 
-This provides a simple way to understand how tasks are distributed.
+Example:
+
+```text
+========== TASK STATISTICS ==========
+
+Total Tasks: 15
+Completed: 8
+Pending: 7
+In Progress: 3
+
+Priority Breakdown:
+High: 4
+Medium: 6
+Low: 5
+
+Time Tracking:
+Estimated Time: 900 minutes
+Time Spent: 620 minutes
+```
+
+This provides a more detailed overview of how tasks and time are being managed.
 
 ---
 
@@ -457,7 +781,36 @@ Completed tasks can also be archived separately using:
 archived_tasks.json
 ```
 
+Generated reports can be saved using:
+
+```text
+task_report.txt
+```
+
 This provides persistent storage without requiring a database.
+
+---
+
+# Backward Compatibility
+
+The newer features were designed to work with the original task structure.
+
+Existing tasks that were created before the newer features were added can still be loaded.
+
+For example, if an older task does not contain:
+
+```text
+progress
+status
+tags
+estimated_time
+time_spent
+focus
+```
+
+the application uses default values when necessary.
+
+This allows the project to continue developing without requiring the original task data to be completely recreated.
 
 ---
 
@@ -471,9 +824,12 @@ The application includes validation for common input errors, including:
 * Invalid priority selections
 * Invalid date input
 * Invalid task IDs
+* Invalid progress values
+* Invalid estimated time
+* Invalid time spent values
 * Invalid timer values
 
-## Example
+Example:
 
 ```python
 try:
@@ -495,6 +851,9 @@ The application also handles situations such as:
 * Invalid dates
 * Invalid task IDs
 * Invalid numerical input
+* Missing archive files
+* Corrupted archive files
+* Report creation errors
 
 Example:
 
@@ -580,7 +939,8 @@ to-do-list/
 ├── python-version/
 │   ├── main.py
 │   ├── tasks.json
-│   └── archived_tasks.json
+│   ├── archived_tasks.json
+│   └── task_report.txt
 │
 ├── web-version/
 │   ├── index.html
@@ -598,6 +958,7 @@ to-do-list/
 | `main.py`             | Main Python To-Do List and productivity application |
 | `tasks.json`          | Local task storage for the Python version           |
 | `archived_tasks.json` | Storage for archived completed tasks                |
+| `task_report.txt`     | Generated text report of current tasks              |
 | `index.html`          | Main webpage for the web version                    |
 | `style.css`           | Styling and layout for the web version              |
 | `script.js`           | JavaScript functionality for the web version        |
@@ -615,9 +976,9 @@ When the Python application starts, users are presented with a menu containing t
 Example:
 
 ```text
-=============================================
+==================================================
                  TO-DO LIST
-=============================================
+==================================================
 
 1.  View All Tasks
 2.  Add Task
@@ -644,6 +1005,8 @@ The main menu keeps the original task-management functions while grouping the ne
 
 The **Productivity Center** contains features focused on helping users plan their workload and improve productivity.
 
+The updated Productivity Center includes:
+
 ```text
 =============================================
           PRODUCTIVITY CENTER
@@ -657,7 +1020,11 @@ The **Productivity Center** contains features focused on helping users plan thei
 6. Weekly Report
 7. Category Summary
 8. Pomodoro Timer
-9. Back
+9. Deadline Reminders
+10. Productivity Streak
+11. View Task Progress
+12. Export Task Report
+13. Back
 ```
 
 This keeps the main menu organized even as more features are added.
@@ -667,6 +1034,8 @@ This keeps the main menu organized even as more features are added.
 # Task Tools
 
 The **Task Tools** section contains additional tools for managing individual tasks.
+
+The updated Task Tools menu includes:
 
 ```text
 =============================================
@@ -683,7 +1052,12 @@ The **Task Tools** section contains additional tools for managing individual tas
 8. Archive Completed Tasks
 9. View Archived Tasks
 10. Delete All Tasks
-11. Back
+11. Update Task Progress
+12. Set Task In Progress
+13. Add Time Spent
+14. Restore Archived Task
+15. Clear Archive
+16. Back
 ```
 
 This organization helps prevent the main menu from becoming too crowded.
@@ -701,18 +1075,22 @@ The application can collect:
 * Priority
 * Category
 * Due date
+* Tags
+* Estimated time
 
 Example:
 
 ```text
-Enter task: Finish Python assignment
-Enter description: Complete the programming activity
-Enter priority: High
-Enter category: School
-Enter due date: 2026-09-15
-
-Task added successfully!
+Task name: Finish Python assignment
+Description: Complete the programming activity
+Priority: High
+Category: School
+Due date: 2026-09-15
+Tags: Python, Assignment, School
+Estimated time: 120
 ```
+
+The task is then saved to the local JSON file.
 
 ---
 
@@ -734,6 +1112,11 @@ Priority: High
 Category: School
 Due Date: 2026-09-15
 Status: Pending
+Progress: 0%
+Estimated Time: 120 minutes
+Time Spent: 0 minutes
+Tags: Python, Assignment, School
+Focus Task: No
 Created: 2026-09-13 09:00
 ```
 
@@ -751,6 +1134,18 @@ Task marked as completed.
 
 The task remains in the list while its completion status changes.
 
+When completed, the task's progress is automatically set to:
+
+```text
+100%
+```
+
+and its status becomes:
+
+```text
+Completed
+```
+
 ---
 
 # Editing a Task
@@ -764,6 +1159,8 @@ Possible information to change includes:
 * Priority
 * Category
 * Due date
+* Tags
+* Estimated time
 
 Users can leave a field blank to keep its existing value.
 
@@ -790,6 +1187,7 @@ The search feature allows users to quickly find tasks based on:
 * Task name
 * Description
 * Category
+* Tags
 
 Example:
 
@@ -805,7 +1203,7 @@ Found 2 task(s).
 
 Tasks can be filtered according to different conditions.
 
-Example:
+The updated filtering system includes:
 
 ```text
 1. Pending
@@ -814,6 +1212,10 @@ Example:
 4. Medium Priority
 5. Low Priority
 6. Category
+7. In Progress
+8. Progress 0%
+9. Progress 50% or more
+10. Has Tags
 ```
 
 This allows users to focus on specific groups of tasks.
@@ -829,6 +1231,8 @@ Tasks can be sorted using:
 2. Due Date
 3. Name
 4. Status
+5. Progress
+6. Estimated Time
 ```
 
 This provides another way to organize larger task lists.
@@ -986,7 +1390,37 @@ The goal of this update was to make the application more useful for everyday tas
 
 ---
 
-## Version 3.0 — Web Version
+## Version 3.0 — Advanced Productivity Update
+
+The Python application was further improved with more detailed task tracking and productivity tools.
+
+### Added
+
+* Task progress tracking
+* Automatic Pending / In Progress / Completed statuses
+* Progress percentage
+* Visual task progress bars
+* Task tags
+* Tag-based searching
+* Estimated task time
+* Actual time tracking
+* Time-spent statistics
+* Deadline reminders
+* Productivity streak tracking
+* Restore archived tasks
+* Clear archived tasks
+* Task report exporting
+* Expanded task filtering
+* Expanded task sorting
+* Improved productivity dashboard
+* Improved task statistics
+* Backward-compatible task data handling
+
+These features transformed the Python version from a traditional To-Do List into a more complete **personal productivity and task-management system**.
+
+---
+
+## Version 4.0 — Web Version
 
 The project was expanded from a command-line application into a browser-based application.
 
@@ -1042,6 +1476,9 @@ The project demonstrates:
 * Sorting
 * Searching
 * Filtering
+* Progress calculations
+* Date calculations
+* Time calculations
 
 ## User Input
 
@@ -1064,8 +1501,11 @@ The project practices:
 * Filtering data
 * Sorting data
 * Tracking task status
+* Tracking progress
+* Tracking time
 * Organizing information
 * Archiving information
+* Restoring archived information
 
 ## File Handling
 
@@ -1078,6 +1518,7 @@ The Python version demonstrates:
 * Loading saved data
 * Working with JSON
 * Maintaining separate archive data
+* Generating text reports
 
 ## Date and Time
 
@@ -1085,11 +1526,12 @@ The project also practices Python's date and time functionality for:
 
 * Due dates
 * Task creation timestamps
+* Task completion timestamps
 * Today's tasks
 * Upcoming tasks
 * Overdue task detection
 * Weekly reports
-* Productivity tracking
+* Productivity streaks
 * Timer functionality
 
 ## Web Development
@@ -1117,6 +1559,10 @@ The newer features introduce concepts used in real productivity applications, in
 * Task archiving
 * Productivity measurements
 * Time management
+* Deadline management
+* Task categorization
+* Task tagging
+* Workload tracking
 
 ---
 
@@ -1165,6 +1611,11 @@ Through this project, I am practicing how to:
 18. Work with dates and time
 19. Analyze task completion
 20. Design features around real-world user needs
+21. Track task progress
+22. Track estimated and actual work time
+23. Build simple productivity analytics
+24. Work with archived application data
+25. Generate application reports
 
 ---
 
