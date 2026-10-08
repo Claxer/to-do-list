@@ -1,5 +1,7 @@
 import json
 import time
+import csv
+import random
 from datetime import datetime, date, timedelta
 
 FILE_NAME = "tasks.json"
@@ -2654,6 +2656,97 @@ def task_tools_menu(tasks):
 
 
 # ==========================================
+# NEW FEATURE: DAILY TASK PLAN
+# ==========================================
+
+def daily_task_plan(tasks):
+    print("\n========== DAILY TASK PLAN ==========")
+
+    pending_tasks = [task for task in tasks if not task.get("completed", False)]
+
+    if not pending_tasks:
+        print("You have no pending tasks. Great job!")
+        return
+
+    today = date.today()
+
+    def task_order(task):
+        due_date = task.get("due_date", "")
+        try:
+            due = datetime.strptime(due_date, "%Y-%m-%d").date() if due_date else date.max
+        except ValueError:
+            due = date.max
+
+        priority_order = {"High": 0, "Medium": 1, "Low": 2}
+        overdue_order = 0 if due < today else 1
+        return (overdue_order, due, priority_order.get(task.get("priority", "Low"), 3))
+
+    pending_tasks.sort(key=task_order)
+
+    print("Suggested order based on overdue dates, deadlines, and priority:")
+    for number, task in enumerate(pending_tasks[:10], 1):
+        due_date = task.get("due_date") or "No deadline"
+        print(f"\n{number}. {task.get('title', 'Untitled task')}")
+        print(f"   Priority: {task.get('priority', 'Low')} | Due: {due_date}")
+        print(f"   Progress: {task.get('progress', 0)}% | Status: {task.get('status', 'Pending')}")
+
+    if len(pending_tasks) > 10:
+        print(f"\nShowing 10 of {len(pending_tasks)} pending tasks.")
+
+
+# ==========================================
+# NEW FEATURE: RANDOM PENDING TASK PICKER
+# ==========================================
+
+def pick_random_task(tasks):
+    print("\n========== RANDOM TASK PICKER ==========")
+    pending_tasks = [task for task in tasks if not task.get("completed", False)]
+
+    if not pending_tasks:
+        print("No pending tasks to choose from.")
+        return
+
+    task = random.choice(pending_tasks)
+    print("Here is a task you can work on next:")
+    display_task(task)
+
+
+# ==========================================
+# NEW FEATURE: EXPORT TASKS TO CSV
+# ==========================================
+
+def export_tasks_csv(tasks):
+    print("\n========== EXPORT TASKS TO CSV ==========")
+
+    if not tasks:
+        print("There are no tasks to export.")
+        return
+
+    file_name = "tasks_export.csv"
+    fieldnames = [
+        "id", "title", "description", "priority", "category",
+        "due_date", "completed", "status", "progress", "tags",
+        "estimated_time", "time_spent", "focus", "created_at"
+    ]
+
+    try:
+        with open(file_name, "w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+
+            for task in tasks:
+                row = task.copy()
+                row["tags"] = ", ".join(task.get("tags", []))
+                writer.writerow({field: row.get(field, "") for field in fieldnames})
+
+        print(f"Tasks exported successfully to {file_name}.")
+        print("You can open this file with Excel or another spreadsheet program.")
+
+    except OSError:
+        print("Could not export tasks. Please check file permissions.")
+
+
+# ==========================================
 # MAIN MENU
 # ==========================================
 
@@ -2680,7 +2773,10 @@ def main():
         print("10. Clear Completed Tasks")
         print("11. Productivity Center")
         print("12. Task Tools")
-        print("13. Exit")
+        print("13. Daily Task Plan")
+        print("14. Pick a Random Pending Task")
+        print("15. Export Tasks to CSV")
+        print("16. Exit")
 
         print("=" * 50)
 
@@ -2738,6 +2834,18 @@ def main():
 
         elif choice == "13":
 
+            daily_task_plan(tasks)
+
+        elif choice == "14":
+
+            pick_random_task(tasks)
+
+        elif choice == "15":
+
+            export_tasks_csv(tasks)
+
+        elif choice == "16":
+
             save_tasks(tasks)
 
             print("\nTasks saved successfully.")
@@ -2749,7 +2857,7 @@ def main():
 
             print(
                 "\nInvalid choice. "
-                "Please select 1-13."
+                "Please select 1-16."
             )
 
 
