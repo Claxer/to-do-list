@@ -4,7 +4,7 @@ A beginner-friendly **To-Do List application available in both Python and Web ve
 
 The project originally started as a basic Python command-line application and has gradually been improved with additional task-management and productivity features. A **web version** was later added to provide a more modern, visual, and student-friendly experience.
 
-The Python version now includes features such as **productivity dashboards, today's tasks, overdue tasks, upcoming tasks, task notes, focus tasks, productivity scores, weekly reports, task archiving, multiple-task completion, task progress tracking, time tracking, task tags, deadline reminders, productivity streaks, task restoration, task report exporting, and a Pomodoro focus timer**.
+The Python version now includes features such as **productivity dashboards, today's tasks, overdue tasks, upcoming tasks, task notes, focus tasks, productivity scores, weekly reports, task archiving, multiple-task completion, task progress tracking, time tracking, task tags, deadline reminders, productivity streaks, task restoration, text and CSV exports, a daily task planner, a random pending-task picker, and a Pomodoro focus timer**.
 
 This project is part of my learning journey as an **Information Technology student**, where I am practicing programming, web development, problem solving, application design, and GitHub project management.
 
@@ -42,6 +42,9 @@ It has developed from a simple task list into a more complete **personal product
 * Track task progress
 * Set tasks as In Progress
 * Prevent empty tasks from being added
+* Generate a suggested daily task plan
+* Pick a random pending task to work on next
+* Export task information to a CSV file
 
 ## Task Organization
 
@@ -604,7 +607,7 @@ The report is saved as:
 task_report.txt
 ```
 
-The exported report contains information such as:
+The exported text report contains information such as:
 
 * Total tasks
 * Completed tasks
@@ -765,6 +768,49 @@ This provides a more detailed overview of how tasks and time are being managed.
 
 ---
 
+# Daily Task Plan
+
+The **Daily Task Plan** creates a suggested order for working through unfinished tasks. It considers overdue tasks first, then due dates, and then priority levels (**High**, **Medium**, and **Low**). It displays up to 10 pending tasks, including each task's priority, due date, progress, and status.
+
+Example:
+
+```text
+========== DAILY TASK PLAN ==========
+Suggested order based on overdue dates, deadlines, and priority:
+
+1. Finish Database Activity
+   Priority: High | Due: 2026-10-08
+   Progress: 25% | Status: In Progress
+```
+
+Choose **Daily Task Plan** from the main menu to view the suggested order. The plan is a recommendation; it does not change task details or automatically mark tasks as complete.
+
+---
+
+# Random Pending Task Picker
+
+The **Pick a Random Pending Task** feature chooses one unfinished task at random. It can be useful when users are unsure which pending task to work on next. The selected task is displayed using the application's existing task display format. Completed tasks are not included in the selection.
+
+If there are no pending tasks, the application displays a message instead of selecting a task.
+
+---
+
+# Export Tasks to CSV
+
+The Python version can export task data to a comma-separated values (**CSV**) file named:
+
+```text
+tasks_export.csv
+```
+
+The export includes fields such as task ID, title, description, priority, category, due date, completion status, progress, tags, estimated time, time spent, focus status, and creation date. The CSV file can be opened in spreadsheet applications such as Microsoft Excel or compatible programs.
+
+To create the file, choose **Export Tasks to CSV** from the main menu. If there are no tasks to export, the application informs the user. The export also handles file-writing errors by displaying an error message.
+
+This is separate from `task_report.txt`: the text report provides a readable summary, while the CSV export organizes individual task fields into columns.
+
+---
+
 # Persistent Storage
 
 The Python version can save tasks locally so that information can be loaded again when the application is restarted.
@@ -787,7 +833,13 @@ Generated reports can be saved using:
 task_report.txt
 ```
 
-This provides persistent storage without requiring a database.
+Task data can also be exported for spreadsheet use to:
+
+```text
+tasks_export.csv
+```
+
+The CSV file is generated when the user selects the export option. This provides persistent local storage and export options without requiring a database.
 
 ---
 
@@ -959,6 +1011,7 @@ to-do-list/
 | `tasks.json`          | Local task storage for the Python version           |
 | `archived_tasks.json` | Storage for archived completed tasks                |
 | `task_report.txt`     | Generated text report of current tasks              |
+| `tasks_export.csv`    | Generated CSV export of task details                |
 | `index.html`          | Main webpage for the web version                    |
 | `style.css`           | Styling and layout for the web version              |
 | `script.js`           | JavaScript functionality for the web version        |
@@ -992,12 +1045,15 @@ Example:
 10. Clear Completed Tasks
 11. Productivity Center
 12. Task Tools
-13. Exit
+13. Daily Task Plan
+14. Pick a Random Pending Task
+15. Export Tasks to CSV
+16. Exit
 
 Choose an option:
 ```
 
-The main menu keeps the original task-management functions while grouping the newer productivity features into dedicated sections.
+The main menu keeps the original task-management functions while grouping productivity tools in dedicated sections. The three additional options provide a daily task plan, a random task suggestion, and a CSV export.
 
 ---
 
@@ -1420,6 +1476,22 @@ These features transformed the Python version from a traditional To-Do List into
 
 ---
 
+## Version 3.1 — Task Planning and Export Update
+
+The Python version received three additional tools to make daily task management more convenient.
+
+### Added
+
+* Daily Task Plan ordered by overdue status, due date, and priority
+* Random Pending Task Picker
+* CSV export of task information to `tasks_export.csv`
+* Main-menu options for accessing the new tools
+* Basic handling for empty task lists and CSV file-writing errors
+
+The update adds ways to decide what to work on next and to use task data outside the application.
+
+---
+
 ## Version 4.0 — Web Version
 
 The project was expanded from a command-line application into a browser-based application.
@@ -1473,6 +1545,8 @@ The project demonstrates:
 * Conditions
 * Menu-based program logic
 * Data processing
+* Random selection from a filtered task list
+* Ordering tasks using multiple conditions
 * Sorting
 * Searching
 * Filtering
@@ -1519,6 +1593,7 @@ The Python version demonstrates:
 * Working with JSON
 * Maintaining separate archive data
 * Generating text reports
+* Exporting structured task data to CSV
 
 ## Date and Time
 
